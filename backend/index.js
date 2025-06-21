@@ -12,21 +12,24 @@ app.use(express.json());
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+  // No need for useNewUrlParser or useUnifiedTopology in modern Mongoose
 })
-.then(() => console.log('MongoDB Connected'))
-.catch((err) => console.error('MongoDB Error:', err));
+.then(() => console.log('✅ MongoDB Connected Successfully'))
+.catch((err) => console.error('❌ MongoDB Connection Error:', err));
 
-// Routes (Example)
+// API Routes
+const userRoutes = require('./routes/userRoutes');
+const waitlistRoutes = require('./routes/waitlistRoutes');
+
+app.use('/api/users', userRoutes);
+app.use('/api/waitlist', waitlistRoutes);
+
+// Root path for testing
 app.get('/', (req, res) => {
-  res.send('Finlexa Backend Running');
+  res.send('Finlexa Backend is alive!');
 });
-
-// Add your routes here
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
-const userRoutes = require('./routes/userRoutes');
-app.use('/api/users', userRoutes);
+

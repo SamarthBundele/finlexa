@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, Mail, Phone, User } from 'lucide-react';
 import { toast } from 'sonner';
+import axios from 'axios';
 
 const WaitlistForm = () => {
   const [formData, setFormData] = useState({
@@ -24,39 +25,49 @@ const WaitlistForm = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Basic validation
-    if (!formData.name || !formData.mobile || !formData.email) {
-      toast.error('Please fill in all fields');
-      return;
-    }
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      toast.error('Please enter a valid email address');
-      return;
-    }
+  // Basic validation
+  if (!formData.name || !formData.mobile || !formData.email) {
+    toast.error('Please fill in all fields');
+    return;
+  }
 
-    // Mobile validation (basic)
-    const mobileRegex = /^[+]?[\d\s-()]{10,}$/;
-    if (!mobileRegex.test(formData.mobile)) {
-      toast.error('Please enter a valid mobile number');
-      return;
-    }
+  // Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(formData.email)) {
+    toast.error('Please enter a valid email address');
+    return;
+  }
 
-    setIsLoading(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    console.log('Waitlist signup:', formData);
+  // Mobile validation (basic)
+  const mobileRegex = /^[+]?[\d\s-()]{10,}$/;
+  if (!mobileRegex.test(formData.mobile)) {
+    toast.error('Please enter a valid mobile number');
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    const res = await axios.post('http://localhost:5000/api/waitlist', {
+      name: formData.name,
+      number: formData.mobile,
+      email: formData.email,
+    });
+
+    console.log('✅ Backend response:', res.data);
     setIsSubmitted(true);
-    setIsLoading(false);
     toast.success('Welcome to the Finlexa waitlist!');
-  };
+  } catch (err: any) {
+    console.error('❌ Submission failed:', err.message);
+    toast.error('Submission failed. Try again.');
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   if (isSubmitted) {
     return (
