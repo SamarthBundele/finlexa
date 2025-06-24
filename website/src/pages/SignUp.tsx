@@ -1,6 +1,7 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner'; // or your toast lib
+import { registerUser } from '../services/registerapi';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,10 +21,28 @@ const SignUp = () => {
     agreeToTerms: false
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement sign-up logic with Supabase
-    console.log('Sign up attempt:', formData);
+
+    if (!formData.agreeToTerms) {
+      toast.error("You must agree to the terms");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    try {
+      const res = await registerUser(formData);
+      console.log('✅ Registered:', res);
+      toast.success('Registration successful!');
+      // Optionally redirect to login
+    } catch (err: any) {
+      console.error('❌ Registration failed:', err.message);
+      toast.error(err.response?.data?.error || 'Something went wrong');
+    }
   };
 
   return (
@@ -44,9 +63,7 @@ const SignUp = () => {
         <Card>
           <CardHeader>
             <CardTitle>Create Account</CardTitle>
-            <CardDescription>
-              Fill in your details to get started
-            </CardDescription>
+            <CardDescription>Fill in your details to get started</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -55,9 +72,8 @@ const SignUp = () => {
                   <Label htmlFor="firstName">First Name</Label>
                   <Input
                     id="firstName"
-                    placeholder="John"
                     value={formData.firstName}
-                    onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                     required
                   />
                 </div>
@@ -65,9 +81,8 @@ const SignUp = () => {
                   <Label htmlFor="lastName">Last Name</Label>
                   <Input
                     id="lastName"
-                    placeholder="Doe"
                     value={formData.lastName}
-                    onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                     required
                   />
                 </div>
@@ -78,34 +93,31 @@ const SignUp = () => {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="john@example.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone">Phone</Label>
                 <Input
                   id="phone"
                   type="tel"
-                  placeholder="+1 (555) 123-4567"
                   value={formData.phone}
-                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   required
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Create a strong password"
                     value={formData.password}
-                    onChange={(e) => setFormData({...formData, password: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     required
                   />
                   <button
@@ -123,18 +135,17 @@ const SignUp = () => {
                 <Input
                   id="confirmPassword"
                   type="password"
-                  placeholder="Confirm your password"
                   value={formData.confirmPassword}
-                  onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                   required
                 />
               </div>
 
               <div className="flex items-center space-x-2">
-                <Checkbox 
+                <Checkbox
                   id="terms"
                   checked={formData.agreeToTerms}
-                  onCheckedChange={(checked) => setFormData({...formData, agreeToTerms: checked as boolean})}
+                  onCheckedChange={(checked) => setFormData({ ...formData, agreeToTerms: checked as boolean })}
                 />
                 <Label htmlFor="terms" className="text-sm">
                   I agree to the{' '}
