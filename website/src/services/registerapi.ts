@@ -10,6 +10,6 @@ interface RegisterFormData {
 }
 
 export const registerUser = async (formData: RegisterFormData) => {
-  const res = await axios.post('http://localhost:5000/api/users/register', formData);
+  const res = await axios.post('https://finlexa-61w5.vercel.app/api/users/register', formData);
   return res.data;
 };
