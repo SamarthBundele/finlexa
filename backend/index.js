@@ -6,8 +6,18 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+
+
+const corsOptions = {
+  origin: 'http://finlexa.vercel.app',  // ✅ Allow only this frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Optional: define allowed methods
+  credentials: true // Optional: allow cookies/auth headers
+};
+
+app.use(cors(corsOptions));
+
 // Middleware
-app.use(cors());
+
 app.use(express.json());
 
 // Connect to MongoDB
