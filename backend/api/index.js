@@ -2,19 +2,22 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
+const serverless = require('serverless-http');
+
+const userRoutes = require('./routes/userRoutes');
+const waitlistRoutes = require('./routes/waitlistRoutes');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
 // ✅ CORS Configuration
 const corsOptions = {
-  origin: ['https://finlexa.vercel.app', 'http://localhost:3000'], // ✅ Production + Local Dev
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // ✅ Allow common methods
-  credentials: true, // ✅ Allow cookies / tokens
+  origin: ['https://finlexa.vercel.app', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // ✅ Handle preflight requests
+app.options('*', cors(corsOptions));
 
 // ✅ Middleware
 app.use(express.json());
@@ -24,19 +27,15 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB Connected Successfully'))
   .catch((err) => console.error('❌ MongoDB Connection Error:', err));
 
-// ✅ API Routes
-const userRoutes = require('./routes/userRoutes');
-const waitlistRoutes = require('./routes/waitlistRoutes');
-
+// ✅ Routes
 app.use('/api/users', userRoutes);
 app.use('/api/waitlist', waitlistRoutes);
 
 // ✅ Health Check Route
-app.get('/', (req, res) => {
+app.get('/api/', (req, res) => {
   res.send('🌟 Finlexa Backend is alive and running!');
 });
 
-// ✅ Start Server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+// ✅ Export for serverless
+module.exports = app;
+module.exports.handler = serverless(app);

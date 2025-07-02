@@ -1,21 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const Waitlist = require('../models/waitlist');
+const Waitlist = require('../models/Waitlist');  // ✅ Model name should match file name
 
-// Add to waitlist
+// ✅ Add to waitlist
 router.post('/', async (req, res) => {
   console.log('📥 POST /api/waitlist hit');
   console.log('Request Body:', req.body);
 
   const { name, number, email } = req.body;
 
+  // ✅ Validation
   if (!name || !number || !email) {
     console.log('❌ Validation failed: Missing fields');
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
   try {
-    console.log('🔍 Checking for existing emaill...');
+    console.log('🔍 Checking for existing email...');
     const emailExists = await Waitlist.findOne({ email });
     if (emailExists) {
       console.log('⚠️ Email already on waitlist');
@@ -35,7 +36,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// (Optional) View waitlist entries
+// ✅ (Optional) View waitlist entries
 router.get('/', async (req, res) => {
   try {
     const list = await Waitlist.find();
