@@ -11,10 +11,11 @@ const app = express();
 
 // ✅ CORS Configuration
 const corsOptions = {
-  origin: ['https://finlexa.vercel.app', 'http://localhost:3000'],
+  origin: '*', // ✅ Allow requests from any origin
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true
+  credentials: false // ⚠️ Credentials cannot be true with '*' origin
 };
+
 
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
