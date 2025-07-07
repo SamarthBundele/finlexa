@@ -36,11 +36,7 @@ app.use("/api/waitlist", waitlistRoutes);
 app.get("/api/", (req, res) => {
   res.send("🌟 Finlexa Backend is alive and running!");
 });
-if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () => {
-    console.log(`🚀 Server is running on http://localhost:${PORT}`);
-  });
-}
+
 // ✅ Export for serverless
 module.exports = app;
 module.exports.handler = serverless(app);
