@@ -7,6 +7,11 @@ interface WaitlistFormData {
 }
 
 export const submitWaitlistForm = async (formData: WaitlistFormData) => {
+  console.log("🚀 Sending:", {
+    name: formData.name,
+    number: formData.number,
+    email: formData.email,
+  });
   const response = await axios.post(
     "https://finlexa-61w5.vercel.app/api/waitlist",
     {
