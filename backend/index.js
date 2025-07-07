@@ -6,7 +6,7 @@ const serverless = require("serverless-http");
 
 const userRoutes = require("./routes/userRoutes");
 const waitlistRoutes = require("./routes/waitlistRoutes");
-const PORT = process.env.PORT || 5000;
+
 const app = express();
 
 // ✅ CORS Configuration
