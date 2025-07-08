@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Waitlist = require('../models/Waitlist');  // ✅ Model name should match file name
+const Waitlist = require('../models/waitlist');  // ✅ Model name should match file name
 
 // ✅ Add to waitlist
 router.post('/', async (req, res) => {
