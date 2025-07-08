@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const User = require('../models/user'); // Make sure filename matches case (Linux is case-sensitive)
+const User = require('../models/User'); // Make sure filename matches case (Linux is case-sensitive)
 const { register } = require('../controllers/auth');
 const dbConnect = require('../utils/dbConnect'); // Import cached DB connection utility
 
